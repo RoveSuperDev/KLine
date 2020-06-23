@@ -6,7 +6,8 @@ import 'kchart/chart_style.dart';
 import 'kline_vertical_widget.dart';
 import 'kline_data_controller.dart';
 import 'network/httptool.dart';
-
+import 'pointfigure/figure_page.dart';
+import 'package:flutter_kchart/pointfigure/pure_kline_entity.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -52,6 +53,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   List<KLineEntity> datas = [];
+  List<PureKlineEntity> pureKlineDatas = [];
   bool showLoading = true;
   KLineDataController dataController = KLineDataController();
 
@@ -100,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FigurePage(pureKlineDatas)));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
@@ -118,7 +120,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
     Map<String,dynamic> results = await  HttpTool.tool.get('https://api.huobi.pro/market/history/kline?period=${period ?? '1day'}&size=300&symbol=btcusdt', null);
     List list = results["data"];
+    
+
+  
     datas = list.map((item) => KLineEntity.fromJson(item)).toList().reversed.toList().cast<KLineEntity>();
+
+    pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
+
     DataUtil.calculate(datas);
     showLoading = false;
     setState(() {});
@@ -126,8 +134,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
 
 
-//      Map parseJson = json.decode(result);
-//      List list = parseJson['data'];
+    //  Map parseJson = json.decode(result);
+    //  List list = parseJson['data'];
 //      datas = list.map((item) => KLineEntity.fromJson(item)).toList().reversed.toList().cast<KLineEntity>();
 //      DataUtil.calculate(datas);
 //      showLoading = false;
