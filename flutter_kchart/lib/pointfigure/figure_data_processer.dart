@@ -7,7 +7,8 @@ class FigureDataProcesser {
   List<PureKlineEntity>  pointList  = [];//点
   List<List<FigurePoint>> figurePointList = [];//点数图点
   
-  double gezhi = 50;
+  double gezhi = 50;//格值
+  int reverse = 1;//反转点数
   double minAll;
   double maxAll;
 
@@ -65,8 +66,8 @@ void fillFigure() {
   int depth = 0;
   double lastColumnMax = 0;
   double lastColumnMin = 0;
-  // pointList.length
-  for(int i = 0;i< 17;i++){
+  // 
+  for(int i = 0;i< pointList.length;i++){
     PureKlineEntity currentEntity = pointList[i];
     if(i == 0){
         checkPointMergeFirst(currentEntity, depth, type);
@@ -153,7 +154,7 @@ void checkPointMergeNewHigh(PureKlineEntity klineEntity,double lastColumnMin,int
 bool checkUpToDown(PureKlineEntity klineEntity,double lastColumnMax) {
   //是否反转；1点反转
   //最小值。能在次高位置画一个o
-  int lastColumnCigaoChu = lastColumnMax~/gezhi -1 ;
+  int lastColumnCigaoChu = lastColumnMax~/gezhi - reverse ;
   double lastColumnCigaozheng = lastColumnCigaoChu * gezhi;
 
   if(klineEntity.low < lastColumnCigaozheng){
@@ -209,7 +210,7 @@ bool checkDownToUp(PureKlineEntity klineEntity,double lastColumnMin) {
   //最低chu
   int lastColumnMinchu = lastColumnMin~/gezhi + 1;
 
-  int lastColumnMinCigaochu = lastColumnMinchu + 1;//次高
+  int lastColumnMinCigaochu = lastColumnMinchu + reverse;//次高
   double lastColumnCidizheng  = lastColumnMinCigaochu * gezhi;
 
   if(klineEntity.high >= lastColumnCidizheng){

@@ -113,31 +113,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void getData(String period) async {
   
 
-    setState(() {
-      datas = [];
-      showLoading = true;
-    });
+    // setState(() {
+    //   datas = [];
+    //   showLoading = true;
+    // });
 
-    rootBundle.loadString('assets/wy.json').then((result) {
-      Map parseJson = json.decode(result);
-      List list = parseJson["data"];
+    // rootBundle.loadString('assets/wy.json').then((result) {
+    //   Map parseJson = json.decode(result);
+    //   List list = parseJson["data"];
       
-      pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
-      showLoading = false;
+    //   pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
+    //   showLoading = false;
 
-      setState(() {});
-    });
+    //   setState(() {});
+    // });
 
 
-    // Map<String,dynamic> results = await  HttpTool.tool.get('https://api.huobi.pro/market/history/kline?period=${period ?? '1day'}&size=300&symbol=btcusdt', null);
-    // List list = results["data"];
+    Map<String,dynamic> results = await  HttpTool.tool.get('https://api.huobi.pro/market/history/kline?period=${period ?? '1day'}&size=300&symbol=btcusdt', null);
+    List list = results["data"];
     
-    // datas = list.map((item) => KLineEntity.fromJson(item)).toList().reversed.toList().cast<KLineEntity>();
+    datas = list.map((item) => KLineEntity.fromJson(item)).toList().reversed.toList().cast<KLineEntity>();
 
-    // pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
+    pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
+    //test
 
-    // DataUtil.calculate(datas);
-    // showLoading = false;
-    // setState(() {});
+    // List subList =  pureKlineDatas.sublist(0,100);
+    // pureKlineDatas = subList;
+    //end
+    DataUtil.calculate(datas);
+    showLoading = false;
+    setState(() {});
   }
 }
