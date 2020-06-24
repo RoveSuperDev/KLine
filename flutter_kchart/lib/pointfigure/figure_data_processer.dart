@@ -43,6 +43,7 @@ void buildFigurePointArray(){
   int maxzheng = max~/ gezhi ;
   int minzheng = min~/gezhi;
 
+  //通过最大值与最小值计算纵坐标的个数
   for(int i = 0; i<= maxzheng - minzheng;i++){
     List<FigurePoint>  oneLineList = [];
     for(int j = 0;j<pointList.length;j++){
@@ -64,7 +65,8 @@ void fillFigure() {
   int depth = 0;
   double lastColumnMax = 0;
   double lastColumnMin = 0;
-  for(int i = 0;i< pointList.length;i++){
+  // pointList.length
+  for(int i = 0;i< 17;i++){
     PureKlineEntity currentEntity = pointList[i];
     if(i == 0){
         checkPointMergeFirst(currentEntity, depth, type);
@@ -76,7 +78,7 @@ void fillFigure() {
         if(checkPointNewHigh(currentEntity, lastColumnMax, depth)){
            //是否创新高
           checkPointMergeNewHigh(currentEntity, lastColumnMin, depth, type);
-          lastColumnMin = currentEntity.high;
+          lastColumnMax = currentEntity.high;
         }else if(checkUpToDown(currentEntity, lastColumnMax)){
             //是否反转
           if(!checkColumnHadOnlyOne(depth)){
@@ -93,6 +95,7 @@ void fillFigure() {
         //当前列是下降列
         if(checkPointNewLow(currentEntity, lastColumnMin, depth)){
             checkPointMergeNewLow(currentEntity, lastColumnMax, depth, type);
+            lastColumnMin = currentEntity.low;
         }else if(checkDownToUp(currentEntity, lastColumnMin)){
             if(!checkColumnHadOnlyOne(depth)){
               depth = depth + 1;
@@ -100,7 +103,7 @@ void fillFigure() {
             type = 1;
             fillDownToUp(currentEntity, lastColumnMin, depth, type);
             lastColumnMin = currentEntity.low;
-            lastColumnMin = currentEntity.high;
+            lastColumnMax = currentEntity.high;
         }else{
             //什么也不做
         }
@@ -112,7 +115,7 @@ void fillFigure() {
 //第一次处理
 void checkPointMergeFirst(PureKlineEntity klineEntity,int depth,int type) {
   double minAllzheng = (minAll~/gezhi) * gezhi;
-  int minIndex = (klineEntity.low - minAllzheng) ~/ gezhi;
+  int minIndex = (klineEntity.low - minAllzheng) ~/ gezhi + 1;//向上取整；
   int maxIndex = (klineEntity.high - minAllzheng) ~/gezhi;
   realFillPoint(minIndex, maxIndex, depth, type);
 }
@@ -148,8 +151,11 @@ void checkPointMergeNewHigh(PureKlineEntity klineEntity,double lastColumnMin,int
 }
 
 bool checkUpToDown(PureKlineEntity klineEntity,double lastColumnMax) {
-  int lastColumnCigaoChu = lastColumnMax~/gezhi;
+  //是否反转；1点反转
+  //最小值。能在次高位置画一个o
+  int lastColumnCigaoChu = lastColumnMax~/gezhi -1 ;
   double lastColumnCigaozheng = lastColumnCigaoChu * gezhi;
+
   if(klineEntity.low < lastColumnCigaozheng){
     return true;
   }else {
@@ -168,19 +174,20 @@ void fillUpToDown(PureKlineEntity klineEntity,double lastColumnMax,int depth,int
     //最小的坐标
     int lowchu = klineEntity.low~/gezhi;
     double lowzheng  = lowchu *gezhi ;
-    int minIndex = (lowzheng - minAllzheng)~/gezhi;
+    int minIndex = (lowzheng - minAllzheng)~/gezhi + 1;
 
     realFillPoint(minIndex, maxIndex, depth, type);
 }
 
-// 下降的处理
+// 下降的处理新低
 bool checkPointNewLow(PureKlineEntity klineEntity,double lastColumnMin ,int depth){
-  int minchu = klineEntity.low~/gezhi ;
-  double minzheng = gezhi * minchu;
+  int lowchu = klineEntity.low~/gezhi;
+  double lowzheng = gezhi * lowchu;
 
   int lastColumMinChu = lastColumnMin~/gezhi;
-  double lastColumMinzheng = gezhi *lastColumMinChu;
-  if(minzheng < lastColumMinzheng){
+  double lastColumMinzheng = gezhi * lastColumMinChu;
+
+  if(lowzheng < lastColumMinzheng){
     return true;
   }else{
     return false;
@@ -189,7 +196,7 @@ bool checkPointNewLow(PureKlineEntity klineEntity,double lastColumnMin ,int dept
 
 void checkPointMergeNewLow(PureKlineEntity klineEntity,double lastColumnMax, int depth, int type){
   double minAllzheng = (minAll~/gezhi) *gezhi;
-  int minIndex = (klineEntity.low - minAllzheng) ~/gezhi ;
+  int minIndex = (klineEntity.low - minAllzheng) ~/gezhi + 1;
   
   int maxChu = lastColumnMax~/gezhi ;
   double maxzheng = maxChu *gezhi;
@@ -198,9 +205,13 @@ void checkPointMergeNewLow(PureKlineEntity klineEntity,double lastColumnMax, int
 }
 
 bool checkDownToUp(PureKlineEntity klineEntity,double lastColumnMin) {
-  double lastColumnCidi = lastColumnMin + gezhi;
-  int lastColumnCidichu = lastColumnCidi~/gezhi;
-  double lastColumnCidizheng  = lastColumnCidichu *gezhi;
+
+  //最低chu
+  int lastColumnMinchu = lastColumnMin~/gezhi + 1;
+
+  int lastColumnMinCigaochu = lastColumnMinchu + 1;//次高
+  double lastColumnCidizheng  = lastColumnMinCigaochu * gezhi;
+
   if(klineEntity.high >= lastColumnCidizheng){
     return true;
   }else{
@@ -211,13 +222,16 @@ bool checkDownToUp(PureKlineEntity klineEntity,double lastColumnMin) {
 void fillDownToUp(PureKlineEntity klineEntity,double lastColumnMin,int depth,int type){
   double minAllzheng = (minAll~/gezhi) *gezhi;
 
-  //次低
-  int lastColumnchu = lastColumnMin~/gezhi;
-  double lastColumnzheng = lastColumnchu *gezhi;
+  //最低chu
+  int lastColumnchu = lastColumnMin~/gezhi + 1;
+  double lastColumnzheng = lastColumnchu *gezhi;//最低整数
+
+  //最低index
   int minIndex = (lastColumnzheng - minAllzheng)~/gezhi + 1;
 
-  //最高
+  //最高index
   int maxIndex = (klineEntity.high - minAllzheng)~/gezhi;
+
   realFillPoint(minIndex, maxIndex, depth, type);
 }
 

@@ -34,13 +34,15 @@ class _FigurePageState extends State<FigurePage> {
         title: Text('图'),
       ),
       body: Container(
-        child:  SingleChildScrollView(
-          child: CustomPaint(
-          size: Size(2000,600),
-          painter: FigurePointRender(figureDataProcesser.figurePointList),
-        ),
+        child:  ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+                CustomPaint(
+                    size: Size(2000,600),
+                    painter: FigurePointRender(figureDataProcesser.figurePointList,figureDataProcesser.minAll,figureDataProcesser.maxAll),
+                )
+          ],
         )
-        
       ),
     );
   }

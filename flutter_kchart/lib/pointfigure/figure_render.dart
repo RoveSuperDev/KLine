@@ -1,10 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_kchart/pointfigure/figure_point.dart';
 
 class FigurePointRender extends CustomPainter {
   List<List<FigurePoint>> figurePointList;
-  FigurePointRender(this.figurePointList);
+  double minAll;
+  double maxAll;
+  FigurePointRender(this.figurePointList,this.minAll,this.maxAll);
 
   final Paint dotPaint = Paint()
     ..isAntiAlias = true
@@ -14,17 +15,17 @@ class FigurePointRender extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-
-
-
     // canvas.drawRect(Rect.fromLTRB(10, 10, 20, 20), dotPaint);
     dotPaint.color = Colors.grey;
-     canvas.drawRect(Rect.fromLTRB(0, 0,size.width,size.height), dotPaint);
+    canvas.drawRect(Rect.fromLTRB(0, 0,size.width,size.height), dotPaint);
     
     double lineHeight = size.height/ figurePointList.length;
+    // double leftMargin = 40;
 
     for(int i = 0;i< figurePointList.length;i++) {
       List<FigurePoint> lineList = figurePointList[i];
+
+
       for (int j = 0;j< lineList.length;j++){
         FigurePoint figurePoint = lineList[j];
        
@@ -42,7 +43,7 @@ class FigurePointRender extends CustomPainter {
              canvas.drawOval(pointRect, dotPaint);
          }else if(figurePoint.type == 1){
             dotPaint.color = Colors.green;
-             canvas.drawOval(pointRect, dotPaint);
+           canvas.drawOval(pointRect, dotPaint);
          }
       }
     }
@@ -53,6 +54,9 @@ class FigurePointRender extends CustomPainter {
     return true;
   }
 
+  void drawLeftZuobiao() {
+
+  }
   void drawDot(){
 
   }

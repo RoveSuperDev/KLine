@@ -44,6 +44,7 @@ flutter:
     - assets/depth.json
     - assets/kline.json
     - assets/kmon.json
+    - assets/wy.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:
