@@ -1,4 +1,5 @@
 
+import 'package:flutter_kchart/pointfigure/figure_point_const.dart';
 import 'package:flutter_kchart/pointfigure/pure_kline_entity.dart';
 import 'figure_point.dart';
 
@@ -6,23 +7,37 @@ class FigureDataProcesser {
  
   List<PureKlineEntity>  pointList  = [];//点
   List<List<FigurePoint>> figurePointList = [];//点数图点
-  
+  int maxDepth;//最大深度
+
   double gezhi = 50;//格值
   int reverse = 1;//反转点数
   double minAll;
   double maxAll;
 
+  double lineHeight = 0;
+  double mainChartHeight = 0;
+
 void setPointList(List<PureKlineEntity> list){
   pointList.clear();
   pointList = list;
   build();
+
+  // lineHeight = FigurePointChartConst.mainChartHeight/figurePointList.length;
+
+  lineHeight = 15;
+  mainChartHeight = figurePointList.length * lineHeight;
+  // if(lineHeight < 10){
+  //   lineHeight = 10;
+  // }else if(lineHeight > 20){
+  //   lineHeight = 20;
+  // }
 }
 
 void build (){
   buildFigurePointArray();//初始化点
   fillFigure();//填充点
   reverseUpToDownPoint();//上下反转点
-  printFigurePointList();//打印
+  // printFigurePointList();//打印
 }
 
 void buildFigurePointArray(){
@@ -66,7 +81,7 @@ void fillFigure() {
   int depth = 0;
   double lastColumnMax = 0;
   double lastColumnMin = 0;
-  // 
+  
   for(int i = 0;i< pointList.length;i++){
     PureKlineEntity currentEntity = pointList[i];
     if(i == 0){
@@ -111,6 +126,7 @@ void fillFigure() {
       }
     }
   }
+  maxDepth = depth;
 }
 
 //第一次处理

@@ -45,6 +45,7 @@ flutter:
     - assets/kline.json
     - assets/kmon.json
     - assets/wy.json
+    - assets/testbtc.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

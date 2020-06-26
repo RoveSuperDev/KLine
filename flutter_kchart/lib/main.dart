@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     //   showLoading = true;
     // });
 
-    // rootBundle.loadString('assets/wy.json').then((result) {
+    // rootBundle.loadString('assets/testbtc.json').then((result) {
     //   Map parseJson = json.decode(result);
     //   List list = parseJson["data"];
       
@@ -137,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
     //test
 
-    // List subList =  pureKlineDatas.sublist(0,100);
+    // List subList =  pureKlineDatas.sublist(0,146);
     // pureKlineDatas = subList;
     //end
     DataUtil.calculate(datas);
