@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_kchart/pointfigure/figure_point.dart';
-import 'package:flutter_kchart/pointfigure/figure_point_const.dart';
+
 class FigurePointRender extends CustomPainter {
   List<List<FigurePoint>> figurePointList;
   double minAll;

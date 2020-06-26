@@ -22,6 +22,8 @@ class KLineDataController extends ChangeNotifier {
   KLinePeriodModel periodModel;
 
   void Function(KLinePeriodModel) changePeriodClick;
+  void Function(String symbols) searchButtonClick;
+  void Function() changeFigurePointClick; 
 
   KLineDataController() {
     mainStates = KLineMainStateModel.defaultModels();
@@ -64,6 +66,10 @@ class KLineDataController extends ChangeNotifier {
     changePeriodClick(periodModel);
     notifyListeners();
   }
+
+   void hideKeyBord (BuildContext context) {
+       FocusScope.of(context).requestFocus(FocusNode());
+    }
 
 }
 
@@ -110,7 +116,6 @@ class _KLineDataWidgetControllerState extends State<KLineDataWidgetController> {
       });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return _KLineControllerScope(
@@ -128,9 +133,6 @@ class _KLineDataWidgetControllerState extends State<KLineDataWidgetController> {
   }
 
 }
-
-
-
 
 class _KLineControllerScope extends InheritedWidget {
 

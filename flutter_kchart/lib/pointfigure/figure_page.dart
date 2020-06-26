@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_kchart/pointfigure/figure_x_widget.dart';
 import 'package:flutter_kchart/pointfigure/pure_kline_entity.dart';
 import 'package:flutter_kchart/pointfigure/figure_data_processer.dart';
 import 'package:flutter_kchart/pointfigure/figure_point_render.dart';
@@ -8,8 +7,9 @@ import 'package:flutter_kchart/pointfigure/figure_point_const.dart';
 
 class FigurePage extends StatefulWidget {
   List<PureKlineEntity> kLineEntityList; //k线数据
-  String symbols = "btcustd"; //品种
-  FigurePage(this.kLineEntityList);
+  String currentSymbols ;//"btcustd"; //品种
+  String currentPeriod;
+  FigurePage({this.kLineEntityList,this.currentSymbols,this.currentPeriod});
 
   @override
   _FigurePageState createState() => _FigurePageState();
@@ -17,11 +17,15 @@ class FigurePage extends StatefulWidget {
 
 class _FigurePageState extends State<FigurePage> {
   FigureDataProcesser figureDataProcesser;
+  String currentSymbols ;//"btcustd"; //品种
+  String currentPeriod;
+
   int reversal = 1;
   @override
   void initState() {
     super.initState();
-
+    currentSymbols = widget.currentSymbols;
+    currentPeriod = widget.currentPeriod;
     figureDataProcesser = FigureDataProcesser();
     figureDataProcesser.setPointList(widget.kLineEntityList);
   }
@@ -149,14 +153,12 @@ class _FigurePageState extends State<FigurePage> {
 
 //头部行
   Widget chartTop() {
-    String chartTopString = "品种:" +
-        widget.symbols +
-        "  " +
-        "格值:" +
-        figureDataProcesser.gezhi.toString() +
-        "  " +
-        "反转数:" +
-        reversal.toString();
+    String symbolStr = "品种:" + currentSymbols;
+    String periodStr = "周期" + currentPeriod;
+    String gezhiStr =  "格值:" + figureDataProcesser.gezhi.toString();
+    String reversalStr =  "反转数:" + reversal.toString();
+    String chartTopString = symbolStr + "  " + periodStr + "  " + gezhiStr + " " + reversalStr;
+
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       child: Text(

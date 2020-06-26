@@ -21,23 +21,14 @@ void setPointList(List<PureKlineEntity> list){
   pointList.clear();
   pointList = list;
   build();
-
-  // lineHeight = FigurePointChartConst.mainChartHeight/figurePointList.length;
-
   lineHeight = 15;
   mainChartHeight = figurePointList.length * lineHeight;
-  // if(lineHeight < 10){
-  //   lineHeight = 10;
-  // }else if(lineHeight > 20){
-  //   lineHeight = 20;
-  // }
 }
 
 void build (){
   buildFigurePointArray();//初始化点
   fillFigure();//填充点
   reverseUpToDownPoint();//上下反转点
-  // printFigurePointList();//打印
 }
 
 void buildFigurePointArray(){
