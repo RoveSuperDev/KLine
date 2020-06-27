@@ -20,7 +20,6 @@ class KLineVerticalWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _KLineVerticalWidgetState();
   }
 }
@@ -116,12 +115,12 @@ class _KLineVerticalWidgetState extends State<KLineVerticalWidget>
                 child: Stack(
               children: <Widget>[
                 Container(
-                  height: 450,
+                  height: MediaQuery.of(context).size.height - 50 - 20 ,
                   width: MediaQuery.of(context).size.width,
                   child: KChartWidget(
                     widget.datas,
                     width: MediaQuery.of(context).size.width,
-                    height: 450,
+                    height:  MediaQuery.of(context).size.height - 50 -20,
                     isLine: KLineDataWidgetController.of(context).isLine,
                     mainState: dataController.mainState,
                     secondaryState: dataController.secondaryState,

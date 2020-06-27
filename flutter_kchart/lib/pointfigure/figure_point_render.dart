@@ -28,7 +28,10 @@ class FigurePointRender extends CustomPainter {
       List<FigurePoint> lineList = figurePointList[i];
       Offset p1 = Offset(2, i * lineHeight);
       Offset p2 = Offset(size.width - 2, i * lineHeight);
-      drawSeparateLine(canvas, p1, p2);
+      if(i != 0 || i != figurePointList.length -1){
+          drawSeparateLine(canvas, p1, p2);
+      }
+     
 
       for (int j = 0; j < lineList.length; j++) {
         FigurePoint figurePoint = lineList[j];
@@ -52,13 +55,16 @@ class FigurePointRender extends CustomPainter {
       double p2top = figurePointList.length * lineHeight - 2;
       double p2left = i * lineHeight;
       Offset p2 = Offset(p2left, p2top);
+      if(i == 0 || i == (chartWidth / lineHeight -1)) {
+        continue;
+      }
       drawSeparateLine(canvas, p1, p2);
     }
 
     //绘制底下边框
     {
-      Offset p1 = Offset(-200, figurePointList.length * lineHeight);
-      Offset p2 = Offset(size.width + 200, figurePointList.length * lineHeight);
+      Offset p1 = Offset(0, figurePointList.length * lineHeight);
+      Offset p2 = Offset(size.width, figurePointList.length * lineHeight);
       drawBorderLine(canvas, p1, p2);
     }
 

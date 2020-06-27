@@ -38,7 +38,7 @@ class _MainTopHourBarState extends State<MainTopHoursSelectBar>
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      color: Color(0xff131E30),
+      color: Colors.white ,//Color(0xff131E30),
       child: Row(
         children: <Widget>[
           Builder(builder: (BuildContext context) {

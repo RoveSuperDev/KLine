@@ -20,18 +20,51 @@ class FigureDataProcesser {
 void setPointList(List<PureKlineEntity> list){
   pointList.clear();
   pointList = list;
+  initGezhi();
   build();
+}
+
+void initGezhi (){
+  PureKlineEntity  onelineEntity = pointList.first;
+  if(onelineEntity.close < 1){
+    gezhi = 0.01;
+  }else if(onelineEntity.close<5){
+    gezhi = 0.01;
+  }else if(onelineEntity.close < 20){
+    gezhi = 0.5;
+  }else if(onelineEntity.close<100){
+    gezhi = 1;
+  }else if(onelineEntity.close<200){
+    gezhi = 2;
+  }else if(onelineEntity.close<500){
+    gezhi = 4;
+  }else if(onelineEntity.close<1000){
+    gezhi = 5;
+  }else if(onelineEntity.close<20000){
+    gezhi = 50;
+  }
+}
+
+void caculateData (){
   lineHeight = 15;
   mainChartHeight = figurePointList.length * lineHeight;
+}
+
+void rebuild(){
+  build();
 }
 
 void build (){
   buildFigurePointArray();//初始化点
   fillFigure();//填充点
   reverseUpToDownPoint();//上下反转点
+  caculateData();
 }
 
 void buildFigurePointArray(){
+  //清空
+  figurePointList.clear();
+
   PureKlineEntity firstKLineEntity = pointList.first;
   double max = firstKLineEntity.high;
   double min = firstKLineEntity.low;
@@ -47,11 +80,11 @@ void buildFigurePointArray(){
     }
   }
 
-  int maxzheng = max~/ gezhi ;
+  int maxzheng = max~/ gezhi;
   int minzheng = min~/gezhi;
 
   //通过最大值与最小值计算纵坐标的个数
-  for(int i = 0; i<= maxzheng - minzheng;i++){
+  for(int i = 0; i<= (maxzheng - minzheng);i++){
     List<FigurePoint>  oneLineList = [];
     for(int j = 0;j<pointList.length;j++){
       FigurePoint figurePoint = FigurePoint();
