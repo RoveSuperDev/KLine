@@ -36,6 +36,7 @@ class _KLineVerticalWidgetState extends State<KLineVerticalWidget>
   AnimationController indicatorsAnimationController;
   RectTween indicatorsPosition;
 
+  bool modeTraning;//训练模式
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +60,8 @@ class _KLineVerticalWidgetState extends State<KLineVerticalWidget>
       end: new Rect.fromLTRB(0.0, 5.0, 0.0, 0.0),
     );
     indicatorsRect = indicatorsPosition.animate(indicatorsAnimationController);
+
+
   }
 
   void indicatorsShowOrHide() {
@@ -107,6 +110,9 @@ class _KLineVerticalWidgetState extends State<KLineVerticalWidget>
             },
             indicatorsShowOrHideClick: () {
               indicatorsShowOrHide();
+            },
+            modeButtonClick: (){
+              dataController.changeModeTraning();
             },
           ),
 

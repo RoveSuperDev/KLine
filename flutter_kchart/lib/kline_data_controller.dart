@@ -20,7 +20,7 @@ class KLineDataController extends ChangeNotifier {
   bool isLine;
 
   KLinePeriodModel periodModel;
-
+  bool modeTraning = true;//是否是训练模式
   void Function(KLinePeriodModel) changePeriodClick;
   void Function(String symbols) searchButtonClick;
   void Function() changeFigurePointClick; 
@@ -36,7 +36,7 @@ class KLineDataController extends ChangeNotifier {
     periodModel = KLinePeriodModel.defaultModel();
   }
 
-
+  //数据发身更改变.去修改状态数据
   void changeMainState(MainState state) {
     mainState = state;
     notifyListeners();
@@ -64,6 +64,11 @@ class KLineDataController extends ChangeNotifier {
       this.topPeriodItems.last.name = "更多";
     }
     changePeriodClick(periodModel);
+    notifyListeners();
+  }
+
+  void changeModeTraning(){
+    modeTraning = ! modeTraning;
     notifyListeners();
   }
 
@@ -107,11 +112,11 @@ class _KLineDataWidgetControllerState extends State<KLineDataWidgetController> {
     // TODO: implement initState
     super.initState();
     _controller = widget.dataController;
-    _controller.addListener(_onController);
+    _controller.addListener(_onController);//添加监听
   }
 
   void _onController() {
-    print("_onController");
+    print("_onController");//重新设置状态
       setState(() {
       });
   }
