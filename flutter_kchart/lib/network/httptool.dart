@@ -10,7 +10,7 @@ class HttpTool {
   HttpTool(){
     dio.interceptors.add(new LogInterceptor(responseBody: true));
   }
-
+ 
   get(url,parmas,{Map<String,dynamic> header}) async{
     Options option = new Options(method: "get");
     option.responseType = ResponseType.json;
@@ -45,6 +45,4 @@ class HttpTool {
     }
     return json.decode(response.data);
   }
-
-
 }

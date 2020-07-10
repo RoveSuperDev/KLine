@@ -1,40 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_kchart/tools/colors_golabal.dart';
 import 'package:flutter_kchart/kline_data_controller.dart';
+import 'package:provider/provider.dart';
 
 class MainTopBar extends StatefulWidget {
   //widget里的对象;
   //widget可以重建；所以传值的后需要保存在其所在的状态里；
 
-  KLineDataController dataController; //KLineDataController();
+  // KLineDataController dataController; //KLineDataController();
   Function periodButtonClick;
   Function indicatorsShowOrHideClick;
-  Function modeButtonClick;
+  // Function modeButtonClick;
   MainTopBar(
-      {this.dataController,
+      {
       this.periodButtonClick,
-      this.indicatorsShowOrHideClick,
-      this.modeButtonClick});
+      this.indicatorsShowOrHideClick});
   @override
   _MainTopBarState createState() => _MainTopBarState();
 }
 
 class _MainTopBarState extends State<MainTopBar> {
   //状态里的对象
-  KLineDataController dataController;
+  // KLineDataController dataController;
   Function periodButtonClick;
   Function indicatorsShowOrHideClick;
-  Function modeButtonClick;
+  // Function modeButtonClick;
   TextEditingController textEditingController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    dataController = widget.dataController;
+    // dataController = widget.dataController;
     periodButtonClick = widget.periodButtonClick;
     indicatorsShowOrHideClick = widget.indicatorsShowOrHideClick;
-    modeButtonClick = widget.modeButtonClick;
+    // modeButtonClick = widget.modeButtonClick;
 
     textEditingController = TextEditingController();
   }
@@ -63,11 +63,12 @@ class _MainTopBarState extends State<MainTopBar> {
   }
 
   Widget modeSelectWidget() {
+    KLineDataController testdataController = Provider.of<KLineDataController>(context);
     return Container(
       child: FlatButton(
-        child: Text(dataController.modeTraning ?'训练模式':'实盘模式'),
+        child: Text(testdataController.runningMode==RunningMode.RunningModeTrainning ?'训练模式':'实盘模式'),
         onPressed: () {
-            modeButtonClick();
+          testdataController.changeModeTraning();
         },
       ),
     );
@@ -86,6 +87,7 @@ class _MainTopBarState extends State<MainTopBar> {
   }
 
   Widget searchButton() {
+     KLineDataController dataController = Provider.of<KLineDataController>(context);
     return Container(
       decoration: BoxDecoration(
           border: Border(
@@ -97,7 +99,7 @@ class _MainTopBarState extends State<MainTopBar> {
         onPressed: () {
           String symbols = textEditingController.text;
           if (symbols != null && symbols.length > 0) {
-            widget.dataController.searchButtonClick(textEditingController.text);
+            dataController.searchDataForSymbols(textEditingController.text);
           }
         },
       ),
@@ -105,6 +107,7 @@ class _MainTopBarState extends State<MainTopBar> {
   }
 
   Widget periodButton() {
+     KLineDataController dataController = Provider.of<KLineDataController>(context);
     return Container(
       decoration: BoxDecoration(
           border: Border(
@@ -118,13 +121,13 @@ class _MainTopBarState extends State<MainTopBar> {
         onPressed: () {
           //暂时先写为空
           periodButtonClick();
-          // widget.dataController.changePeriodClick(null);
         },
       ),
     );
   }
 
   Widget figurePointButton() {
+     KLineDataController dataController = Provider.of<KLineDataController>(context);
     return Container(
       decoration: BoxDecoration(
           border: Border(
@@ -134,7 +137,7 @@ class _MainTopBarState extends State<MainTopBar> {
       child: FlatButton(
         child: Text('点数图'),
         onPressed: () {
-          widget.dataController.changeFigurePointClick();
+            dataController.changeFigurePointClick();
         },
       ),
     );

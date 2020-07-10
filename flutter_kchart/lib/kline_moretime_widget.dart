@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'kchart/chart_style.dart';
 import 'kchart/flutter_kchart.dart';
 import 'kline_data_controller.dart';
@@ -32,7 +33,8 @@ class KlineMoreTimeWidght extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             onTap: (){
                 hideClick();
-                KLineDataWidgetController.of(context).changePeriod(periods[index]);
+                Provider.of<KLineDataController>(context).changePeriod(periods[index]);
+                // KLineDataWidgetController.of(context).changePeriod(periods[index]);
             },
             child:  Container(
               padding: EdgeInsets.fromLTRB(10, 10, 10, 10),

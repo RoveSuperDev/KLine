@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_kchart/user/login_view_model.dart';
-
+import 'dart:convert' as convert;
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -15,6 +15,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLogin = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +113,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void register(context) {
     String email = usernameController.text;
-    String password = passwordController.text;
+    // String password = passwordController.text;
     HttpUser.registerUser(email).then<UserEntity>((value) {
       if(value == null){
          Fluttertoast.showToast(msg: '注册失败', gravity: ToastGravity.CENTER);
@@ -125,15 +127,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void gotoLogin(context) {
     String username = usernameController.text;
     String password = passwordController.text;
-    //因为是异步的代码
+    
     HttpUser.login(username, password).then<UserEntity>((value) {
       if(value == null){
         Fluttertoast.showToast(msg: '登录成功', gravity: ToastGravity.CENTER);
         return;
       }
       Fluttertoast.showToast(msg: '登录成功', gravity: ToastGravity.CENTER);
-      LoginViewModel viewModel = Provider.of<LoginViewModel>(context);
+      LoginViewModel viewModel =  Provider.of<LoginViewModel>(context, listen: false);
       viewModel.loginSucess(value);
+     
       saveLoginUser(value);
     });
 
@@ -150,9 +153,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   void saveLoginUser(UserEntity user) async {
-     SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String,dynamic> userMap = user.toJson();
-     prefs.setString("user",userMap.toString());
+    
+     prefs.setString("user",convert.jsonEncode(userMap));
   }
 
   // Future<User> requestMyInfo(String name, String pwd) async {

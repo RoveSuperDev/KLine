@@ -1,9 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'kchart/flutter_kchart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_kchart/pointfigure/pure_kline_entity.dart';
+import 'package:flutter_kchart/network/HttpKLine.dart';
+
+enum RunningMode { RunningModeTrainning, RunningModeReal }
+
+const int initLastDisplayIndex = 20;
 
 class KLineDataController extends ChangeNotifier {
-
   List<KLineMainStateModel> mainStates;
   List<KLineSecondaryStateModel> secondaryStates;
 
@@ -15,15 +20,29 @@ class KLineDataController extends ChangeNotifier {
 
   MainState mainState;
 
-  SecondaryState  secondaryState;
+  SecondaryState secondaryState;
 
   bool isLine;
 
-  KLinePeriodModel periodModel;
-  bool modeTraning = true;//是否是训练模式
+  //处理行为的变化
   void Function(KLinePeriodModel) changePeriodClick;
-  void Function(String symbols) searchButtonClick;
-  void Function() changeFigurePointClick; 
+  // void Function(String symbols) searchButtonClick;
+  void Function() changeFigurePointClick;
+
+  //处理数据
+  List<KLineEntity> datas = []; //k线数据
+  List<PureKlineEntity> pureKlineDatas = []; //点数图数据
+
+  List<KLineEntity> displayDatas = []; //当前显示的数据
+  List<PureKlineEntity> displayPureKlineDatas = []; //当前显示的点数图
+
+  String currentSymbols = "btcusdt";
+  KLinePeriodModel periodModel;
+
+  RunningMode runningMode = RunningMode.RunningModeTrainning; //是否是训练模式
+  int lastDisplayIndex = initLastDisplayIndex; //训练模式的初始值
+
+  bool showLoading = true;
 
   KLineDataController() {
     mainStates = KLineMainStateModel.defaultModels();
@@ -34,6 +53,7 @@ class KLineDataController extends ChangeNotifier {
     secondaryState = SecondaryState.NONE;
     isLine = true;
     periodModel = KLinePeriodModel.defaultModel();
+    // currentPeriod = periodModel.period;
   }
 
   //数据发身更改变.去修改状态数据
@@ -47,110 +67,80 @@ class KLineDataController extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void changePeriod(KLinePeriodModel periodModel) {
-    if(periodModel.name == this.periodModel.name) {
+    if (periodModel.name == this.periodModel.name) {
       return;
     }
     this.periodModel = periodModel;
-    if(periodModel.name == "分时") {
+    if (periodModel.name == "分时") {
       isLine = true;
     } else {
       isLine = false;
     }
-    if(this.flodPeriodItems.map((e) => e.name).toList().contains(periodModel.name)) {
+    if (this
+        .flodPeriodItems
+        .map((e) => e.name)
+        .toList()
+        .contains(periodModel.name)) {
       this.topPeriodItems.last.name = periodModel.name;
     } else {
       this.topPeriodItems.last.name = "更多";
     }
-    changePeriodClick(periodModel);
-    notifyListeners();
+    getKLineData();
   }
 
-  void changeModeTraning(){
-    modeTraning = ! modeTraning;
-    notifyListeners();
+  void searchDataForSymbols(String toSymbols) {
+    currentSymbols = toSymbols;
+    getKLineData();
   }
 
-   void hideKeyBord (BuildContext context) {
-       FocusScope.of(context).requestFocus(FocusNode());
+  void changeModeTraning() {
+    if (runningMode == RunningMode.RunningModeTrainning) {
+      runningMode = RunningMode.RunningModeReal;
+      lastDisplayIndex = datas.length - 1;
+      displayDatas.clear();
+      displayDatas = datas.sublist(0, lastDisplayIndex);
+    } else if (runningMode == RunningMode.RunningModeReal) {
+      runningMode = RunningMode.RunningModeTrainning;
+
+      lastDisplayIndex = initLastDisplayIndex;
+      displayDatas.clear();
+      displayDatas = datas.sublist(0, lastDisplayIndex);
     }
 
+    notifyListeners();
+  }
+
+  void hideKeyBord(BuildContext context) {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+  void changeLoading(bool loading) {
+    showLoading = loading;
+    notifyListeners();
+  }
+
+
+  void nextKLineIndex() {
+    lastDisplayIndex++;
+  }
+
+  void getKLineData() async {
+    datas.clear();
+    displayDatas.clear();
+    changeLoading(true);
+    //既可以用同步的方式写代码。也可以用异步的方式写代码；
+    datas = await HttpKLine.getKLine(periodModel.period, currentSymbols);
+
+    //k线数据
+    displayDatas = datas.sublist(0, lastDisplayIndex);
+
+    //纯k线数据
+    // pureKlineDatas = list.map((e) => PureKlineEntity.fromJson(e)).toList();
+    // displayPureKlineDatas = pureKlineDatas.sublist(0,currentIndex);
+
+    DataUtil.calculate(datas);
+    changeLoading(false);
+    notifyListeners();
+  }
 }
-
-class KLineDataWidgetController extends StatefulWidget {
-
-  const KLineDataWidgetController({
-    Key key,
-    @required this.child,
-    @required this.dataController
-  }) : super(key: key);
-
-  final Widget child;
-  final KLineDataController dataController;
-
-  static KLineDataController of(BuildContext context) {
-    final _KLineControllerScope scope =
-    context.inheritFromWidgetOfExactType(_KLineControllerScope);
-    return scope?.controller;
-  }
-
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return _KLineDataWidgetControllerState();
-  }
-
-}
-
-class _KLineDataWidgetControllerState extends State<KLineDataWidgetController> {
-
-  KLineDataController _controller;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _controller = widget.dataController;
-    _controller.addListener(_onController);//添加监听
-  }
-
-  void _onController() {
-    print("_onController");//重新设置状态
-      setState(() {
-      });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _KLineControllerScope(
-      controller: _controller,
-      child: widget.child,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.removeListener(_onController);
-    _controller.dispose();
-    super.dispose();
-
-  }
-
-}
-
-class _KLineControllerScope extends InheritedWidget {
-
-  final KLineDataController controller;
-
-  _KLineControllerScope({Key key,this.controller,Widget child}) : super(key: key,child: child);
-
-  @override
-  bool updateShouldNotify(_KLineControllerScope oldWidget) {
-    // TODO: implement updateShouldNotify
-    return  true; //  controller != oldWidget.controller;
-  }
-
-
-}
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'kchart/flutter_kchart.dart';
 import 'kline_data_controller.dart';
 
@@ -12,6 +13,7 @@ class KlineIndicatorsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    KLineDataController dataController =  Provider.of<KLineDataController>(context);//.changeMainState(mainStates[index].state);
     return Container(
       height: 100,
       margin: EdgeInsets.only(left: 5, right: 5),
@@ -42,7 +44,9 @@ class KlineIndicatorsWidget extends StatelessWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: (){
                         hideClick();
-                        KLineDataWidgetController.of(context).changeMainState(mainStates[index].state);
+                        // Provider.of<KLineDataController>(context).changeMainState(mainStates[index].state);
+                        // KLineDataWidgetController.of(context).changeMainState(mainStates[index].state);
+                        dataController.changeMainState(mainStates[index].state);
                       },
                       child: Container(
                         height: 30,
@@ -50,7 +54,7 @@ class KlineIndicatorsWidget extends StatelessWidget {
                         child: Center(
                           child: Text(mainStates[index].name,
                               style: ChartStyle.getIndicatorTextStyle(
-                                  isSelect: mainStates[index].state == KLineDataWidgetController.of(context).mainState)),
+                                  isSelect: mainStates[index].state == dataController.mainState)),
                         ),
                       ),
                     );
@@ -62,11 +66,11 @@ class KlineIndicatorsWidget extends StatelessWidget {
               IconButton(
                   icon: Icon(
                     Icons.remove_red_eye,
-                    color: KLineDataWidgetController.of(context).mainState == MainState.NONE ? Color(0xff3D536c) : Color(0xffBBBBBB),
+                    color: dataController.mainState == MainState.NONE ? Color(0xff3D536c) : Color(0xffBBBBBB),
                   ),
                   onPressed: (){
                     hideClick();
-                    KLineDataWidgetController.of(context).changeMainState(MainState.NONE);
+                    dataController.changeMainState(MainState.NONE);
                   })
             ],
           ),
@@ -92,7 +96,7 @@ class KlineIndicatorsWidget extends StatelessWidget {
                       behavior: HitTestBehavior.opaque,
                       onTap: (){
                         hideClick();
-                      KLineDataWidgetController.of(context).changeSecondaryState(secondaryStates[index].state);
+                      dataController.changeSecondaryState(secondaryStates[index].state);
                     },
                     child: Container(
                       height: 30,
@@ -100,7 +104,7 @@ class KlineIndicatorsWidget extends StatelessWidget {
                       child: Center(
                         child: Text(secondaryStates[index].name,
                             style: ChartStyle.getIndicatorTextStyle(
-                                isSelect: secondaryStates[index].state == KLineDataWidgetController.of(context).secondaryState)),
+                                isSelect: secondaryStates[index].state == dataController.secondaryState)),
                       ),
                     ),
                     );
@@ -112,11 +116,11 @@ class KlineIndicatorsWidget extends StatelessWidget {
               IconButton(
                   icon: Icon(
                     Icons.remove_red_eye,
-                    color:KLineDataWidgetController.of(context).secondaryState == SecondaryState.NONE ? Color(0xff3D536c) : Color(0xffBBBBBB),
+                    color:dataController.secondaryState == SecondaryState.NONE ? Color(0xff3D536c) : Color(0xffBBBBBB),
                   ),
                   onPressed: (){
                     hideClick();
-                    KLineDataWidgetController.of(context).changeSecondaryState(SecondaryState.NONE);
+                    dataController.changeSecondaryState(SecondaryState.NONE);
                   })
             ],
           ),
